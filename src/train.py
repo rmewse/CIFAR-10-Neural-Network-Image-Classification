@@ -19,7 +19,7 @@ model.compile(metrics=['accuracy'],
 
 history = model.fit(train_images, train_labels, epochs=10, validation_data=(test_images, test_labels))
 
-model.save("cirfar10_model.h5")
+model.save("cirfar10_model.keras") # using keras file format, more up to date
 
 
 
