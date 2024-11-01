@@ -2,6 +2,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow.keras import datasets
 from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from model import init_model #importing function from elsewhere in project
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
@@ -9,6 +10,20 @@ test_images = test_images / 255.0
 train_images = train_images / 255.0
 
 # Create and compile model
+
+# Define the ImageDataGenerator with augmentation options
+datagen = ImageDataGenerator(
+    rotation_range=20,        # Randomly rotate images in the range (degrees, 0 to 180)
+    width_shift_range=0.1,    # Randomly translate images horizontally (fraction of total width)
+    height_shift_range=0.1,   # Randomly translate images vertically (fraction of total height)
+    shear_range=0.1,          # Shear intensity (shear angle in counter-clockwise direction in degrees)
+    zoom_range=0.1,           # Randomly zoom into images
+    horizontal_flip=True,     # Randomly flip images
+    fill_mode='nearest'       # Fill pixels that are created after rotation or translation
+)
+
+# Fit the generator to your training data
+datagen.fit(train_images)
 
 model = init_model()
 
@@ -26,8 +41,7 @@ early_stopping = EarlyStopping(
 
 # Training model
 history = model.fit(
-    train_images, 
-    train_labels, 
+    datagen.flow(train_images, train_labels, batch_size=32),
     epochs=100, 
     validation_data=(test_images, test_labels),
     callbacks=[early_stopping])
