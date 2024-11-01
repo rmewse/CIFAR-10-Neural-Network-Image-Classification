@@ -1,6 +1,7 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from tensorflow.keras import datasets
+from tensorflow.keras.callbacks import EarlyStopping
 from model import init_model #importing function from elsewhere in project
 
 (train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
@@ -15,11 +16,24 @@ model.compile(metrics=['accuracy'],
               loss='sparse_categorical_crossentropy',
               optimizer='adam')
 
+
+# Define the early stopping callback
+early_stopping = EarlyStopping(
+    monitor='val_loss',        # Metric to monitor
+    patience=5,                # Number of epochs with no improvement after which training will be stopped
+    restore_best_weights=True   # Restore the model weights from the epoch with the best value of the monitored quantity
+)
+
 # Training model
 
-history = model.fit(train_images, train_labels, epochs=10, validation_data=(test_images, test_labels))
+history = model.fit(
+    train_images, 
+    train_labels, 
+    epochs=30, 
+    validation_data=(test_images, test_labels),
+    callbacks=[early_stopping])
 
-model.save("cirfar10_model.keras") # using keras file format, more up to date
+model.save("cirfar10_model2.keras") # using keras file format, more up to date
 
 
 
