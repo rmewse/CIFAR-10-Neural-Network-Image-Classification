@@ -20,16 +20,15 @@ model.compile(metrics=['accuracy'],
 # Define the early stopping callback
 early_stopping = EarlyStopping(
     monitor='val_loss',        # Metric to monitor
-    patience=5,                # Number of epochs with no improvement after which training will be stopped
+    patience=3,                # Number of epochs with no improvement after which training will be stopped
     restore_best_weights=True   # Restore the model weights from the epoch with the best value of the monitored quantity
 )
 
 # Training model
-
 history = model.fit(
     train_images, 
     train_labels, 
-    epochs=30, 
+    epochs=100, 
     validation_data=(test_images, test_labels),
     callbacks=[early_stopping])
 
